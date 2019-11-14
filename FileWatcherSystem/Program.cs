@@ -11,29 +11,33 @@ namespace FileWatcherSystem
     {
         static void Main(string[] args)
         {
-            Run(@"C:\Users\instaclickuser\Desktop\Json_Location\watcherLoc");
+            Console.WriteLine("File Watcher Test: ");
+            var wtch = Run(@"C:\Users\instaclickuser\Desktop\Json_Location\watcherLoc\");
             while (Console.Read() != 'q')
             {
 
             }
-
+            wtch.Dispose();
         }
 
-        private static void Run(string path)
+        private static FileSystemWatcher Run(string path)
         {
-            using(FileSystemWatcher watcher = new FileSystemWatcher())
-            {
-                watcher.Path = path;
+            string args = Path.GetFullPath(path);
+            FileSystemWatcher watcher = new FileSystemWatcher();
+           
+            watcher.Path = args;
 
-                watcher.NotifyFilter = NotifyFilters.CreationTime;
+            watcher.NotifyFilter = NotifyFilters.Size;
 
-                watcher.Filter = "*.*";
+            watcher.Filter = "*.*";
 
-                watcher.Changed += (s, e) => change(s, e, path);
+            watcher.Changed += (s, e) => change(s, e, path);
 
-                watcher.EnableRaisingEvents = true;
+            watcher.EnableRaisingEvents = true;
 
-            }
+            return watcher;
+
+            
         }
 
         private static void change(object source, FileSystemEventArgs e, string path)
